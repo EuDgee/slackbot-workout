@@ -10,17 +10,29 @@ with open('config.json') as f:
     USERTOKENSTRING = settings['USERTOKENSTRING']
     URLTOKENSTRING = settings["URLTOKENSTRING"]
     TEAMNAMESTRING = settings["TEAMNAMESTRING"]
+    CHANNEL = settings["CHANNEL"]
+    CHANNEL_ID = "C06D39D50"
 
 
 # Extracts online users from Slack API
 def extractSlackUsers(token):
     # Set token parameter of Slack API call
     tokenString = token
-    params = {"token": tokenString}
+    params = {"token": tokenString, "channel": CHANNEL_ID}
 
     # Capture Response as JSON
-    response = requests.get("https://slack.com/api/users.list", params=params)
-    users = json.loads(response.text, encoding='utf-8')["members"]
+    response = requests.get("https://slack.com/api/channels.info", params=params)
+    responseUsers = requests.get("https://slack.com/api/users.list", params=params)
+    usersGroup = json.loads(response.text, encoding='utf-8')["channel"]["members"]
+    allUsers = json.loads(responseUsers.text, encoding='utf-8')["members"]
+
+    def foundUser(user):
+        for userId in usersGroup:
+            if userId == user["id"]:
+                return True
+        return False
+
+    users = filter(foundUser, allUsers)
 
     def findUserNames(x):
         if getStats(x) is False:
@@ -46,13 +58,14 @@ def selectExerciseAndStartTime():
 
     # Random Number generator for Reps/Seconds and Exercise
     nextTimeInterval = random.randrange(300, 1800)
+    #nextTimeInterval = random.randrange(1, 3)
     exerciseIndex = random.randrange(0, 5)
 
     # Announcement String of next lottery time
     lotteryTimeString = "NEXT LOTTERY FOR " + str(exerciseAnnouncements[exerciseIndex]) + " IS IN " + str(nextTimeInterval/60) + " MINUTES"
 
     # POST next lottery announcement to Slack
-    requests.post("https://" + TEAMNAMESTRING + ".slack.com/services/hooks/slackbot?token="+URLTOKENSTRING+"&channel=%23general", data=lotteryTimeString)
+    requests.post("https://" + TEAMNAMESTRING + ".slack.com/services/hooks/slackbot?token="+URLTOKENSTRING+"&channel=%23"+CHANNEL, data=lotteryTimeString)
 
     # Sleep until next lottery announcement
     time.sleep(nextTimeInterval)
@@ -65,7 +78,7 @@ def selectExerciseAndStartTime():
 def selectPerson(exercise):
 
     # Select number of reps
-    exerciseReps = random.randrange(25, 50)
+    exerciseReps = random.randrange(10, 20)
 
     # Pull all users from API
     slackUsers = extractSlackUsers(USERTOKENSTRING)
@@ -78,7 +91,7 @@ def selectPerson(exercise):
     print lotteryWinnerString
 
     # POST to Slack
-    requests.post("https://" + TEAMNAMESTRING + ".slack.com/services/hooks/slackbot?token="+URLTOKENSTRING+"&channel=%23general", data=lotteryWinnerString)
+    requests.post("https://" + TEAMNAMESTRING + ".slack.com/services/hooks/slackbot?token="+URLTOKENSTRING+"&channel=%23"+CHANNEL, data=lotteryWinnerString)
 
     # Record exercise entry in csv
     with open("results.csv", 'a') as f:
