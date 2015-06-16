@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import random
 import time
 import requests
@@ -53,16 +56,15 @@ def extractSlackUsers(token):
 def selectExerciseAndStartTime():
 
     # Exercise (2 Forms of Strings)
-    exercises = [" PUSHUPS ", " PUSHUPS ", " SECOND PLANK ", " SITUPS ", " SECOND WALL SIT "]
-    exerciseAnnouncements = ["PUSHUPS", "PUSHUPS", "PLANK", "SITUPS", "WALLSIT"]
+    exercises = [" отжиманий ", " отжиманий ", " пробежать этажей ", " приседаний ", " секунд сидения у стены "]
+    exerciseAnnouncements = ["отжимания", "отжимания", "пробежаться по летнице", "приседания", "сидение у стены"]
 
     # Random Number generator for Reps/Seconds and Exercise
-    nextTimeInterval = random.randrange(300, 1800)
-    #nextTimeInterval = random.randrange(1, 3)
+    nextTimeInterval = random.randrange(30*60, 50*60)
     exerciseIndex = random.randrange(0, 5)
 
     # Announcement String of next lottery time
-    lotteryTimeString = "NEXT LOTTERY FOR " + str(exerciseAnnouncements[exerciseIndex]) + " IS IN " + str(nextTimeInterval/60) + " MINUTES"
+    lotteryTimeString = "Следующая лотерея на " + str(exerciseAnnouncements[exerciseIndex]) + " будет через " + str(nextTimeInterval/60) + " минуту"
 
     # POST next lottery announcement to Slack
     requests.post("https://" + TEAMNAMESTRING + ".slack.com/services/hooks/slackbot?token="+URLTOKENSTRING+"&channel=%23"+CHANNEL, data=lotteryTimeString)
@@ -87,7 +89,7 @@ def selectPerson(exercise):
     selection = random.randrange(0, len(slackUsers))
 
     # Select lottery winner
-    lotteryWinnerString = str(exerciseReps) + str(exercise) + "RIGHT NOW " + slackUsers[selection]
+    lotteryWinnerString = str(exerciseReps) + str(exercise) + ", прямо сейчас для " + slackUsers[selection]
     print lotteryWinnerString
 
     # POST to Slack
