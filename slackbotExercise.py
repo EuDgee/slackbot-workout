@@ -55,13 +55,12 @@ def extractSlackUsers(token):
 # Selects Next Time Interval and Returns the Exercise
 def selectExerciseAndStartTime():
 
-    # Exercise (2 Forms of Strings)
-    exercises = [" отжиманий", " отжиманий", " пробежать этажей", " приседаний", " секунд сидения у стены"]
-    exerciseAnnouncements = ["отжимания", "отжимания", "пробежаться по летнице", "приседания", "сидение у стены"]
+    # Exercise anouncements
+    exerciseAnnouncements = ["отжимания", "отжимания", "пробежаться по летнице", "приседания", "сидение у стены", "пойти подтянуться"]
 
     # Random Number generator for Reps/Seconds and Exercise
     nextTimeInterval = random.randrange(14*60, 20*60)
-    exerciseIndex = random.randrange(0, 5)
+    exerciseIndex = random.randrange(0, 6)
 
     # Announcement String of next lottery time
     lotteryTimeString = "Следующая лотерея будет на " + str(exerciseAnnouncements[exerciseIndex]) + " через " + str(nextTimeInterval/60) + " минутов"
@@ -73,14 +72,19 @@ def selectExerciseAndStartTime():
     time.sleep(nextTimeInterval)
 
     # Return exercise
-    return str(exercises[exerciseIndex])
+    return exerciseIndex
 
 
 # Selects the exercise lottery winner
-def selectPerson(exercise):
+def selectPerson(exerciseIndex):
+
+    # Exercises
+    exercises = [" отжиманий", " отжиманий", " пробежать этажей", " приседаний", " секунд сидения у стены", " подтягиваний"]
+    coefs = [      1,            1,            0.3,                 1,             2,                         0.3]
 
     # Select number of reps
-    exerciseReps = random.randrange(7, 19)
+    exerciseReps = random.randrange(7, 19) * coefs[exerciseIndex]
+    exercise = exercises[exerciseIndex]
 
     # Pull all users from API
     slackUsers = extractSlackUsers(USERTOKENSTRING)
@@ -101,7 +105,7 @@ def selectPerson(exercise):
         writer.writerow([slackUsers[selection], exerciseReps, exercise])
 
 for i in range(10000):
-    exercise = selectExerciseAndStartTime()
-    selectPerson(exercise)
+    exerciseIndex = selectExerciseAndStartTime()
+    selectPerson(exerciseIndex)
 
 
