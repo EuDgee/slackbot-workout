@@ -60,7 +60,7 @@ def selectExerciseAndStartTime():
     exerciseAnnouncements = ["отжимания", "отжимания", "пробежаться по летнице", "приседания", "сидение у стены"]
 
     # Random Number generator for Reps/Seconds and Exercise
-    nextTimeInterval = random.randrange(15*60, 30*60)
+    nextTimeInterval = random.randrange(14*60, 20*60)
     exerciseIndex = random.randrange(0, 5)
 
     # Announcement String of next lottery time
@@ -80,7 +80,7 @@ def selectExerciseAndStartTime():
 def selectPerson(exercise):
 
     # Select number of reps
-    exerciseReps = random.randrange(10, 30)
+    exerciseReps = random.randrange(7, 19)
 
     # Pull all users from API
     slackUsers = extractSlackUsers(USERTOKENSTRING)
