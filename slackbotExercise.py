@@ -93,7 +93,7 @@ def selectPerson(exerciseIndex):
     selection = random.randrange(0, len(slackUsers))
 
     # Select lottery winner
-    lotteryWinnerString = str(exerciseReps) + str(exercise) + ", прямо сейчас для " + slackUsers[selection]
+    lotteryWinnerString = str(round(exerciseReps)) + str(exercise) + ", прямо сейчас для " + slackUsers[selection]
     print lotteryWinnerString
 
     # POST to Slack
