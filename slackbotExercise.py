@@ -55,11 +55,11 @@ def extractSlackUsers(token):
 def selectExerciseAndStartTime():
 
     # Exercise anouncements
-    exerciseAnnouncements = ["отжимания", "пробежаться по летнице", "приседания", "сидение у стены", "пойти подтянуться", "пожонглировать"]
+    exerciseAnnouncements = ["отжимания", "пробежаться по летнице", "приседания", "сидение у стены", "пойти подтянуться", "пожонглировать", "прибраться на столе"]
 
     # Random Number generator for Reps/Seconds and Exercise
     nextTimeInterval = random.randrange(14*60, 20*60)
-    exerciseIndex = random.randrange(0, 6)
+    exerciseIndex = random.randrange(0, 7)
 
     # Announcement String of next lottery time
     lotteryTimeString = "Следующая лотерея будет на " + str(exerciseAnnouncements[exerciseIndex]) + " через " + str(nextTimeInterval/60) + " минутов"
@@ -78,8 +78,8 @@ def selectExerciseAndStartTime():
 def selectPerson(exerciseIndex):
 
     # Exercises
-    exercises = [" отжиманий", " пробежать этажей", " приседаний", " секунд сидения у стены", " подтягиваний", " секунд пожонглировать"]
-    coefs = [      1,            0.3,                 1,             2,                         0.3,             7]
+    exercises = [" отжиманий", " пробежать этажей", " приседаний", " секунд сидения у стены", " подтягиваний", " секунд пожонглировать", " секунд уборки на столе"]
+    coefs = [      1,            0.3,                 1,             2,                         0.3,             7,                        4]
 
     # Select number of reps
     exerciseReps = random.randrange(7, 19) * coefs[exerciseIndex]
